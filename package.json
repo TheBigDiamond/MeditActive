@@ -1,0 +1,33 @@
+{
+  "name": "meditactive",
+  "version": "1.0.0",
+  "description": "RESTful API for MeditActive application",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "node",
+    "express",
+    "mysql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.1.0",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.9.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
