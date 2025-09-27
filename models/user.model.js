@@ -7,8 +7,7 @@ const User = {
     console.log(`[${requestId}] Query parameters:`, { limit, offset });
 
     let connection;
-    try {
-      const safeLimit = Math.min(parseInt(limit, 10) || 10, 100);
+    try {      const safeLimit = Math.min(parseInt(limit, 10) || 10, 100);
       const safeOffset = Math.max(0, parseInt(offset, 10) || 0);
 
       console.log(`[${requestId}] Safe query values:`, {
