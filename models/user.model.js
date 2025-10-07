@@ -7,7 +7,8 @@ const User = {
     console.log(`[${requestId}] Query parameters:`, { limit, offset });
 
     let connection;
-    try {      const safeLimit = Math.min(parseInt(limit, 10) || 10, 100);
+    try {
+      const safeLimit = Math.min(parseInt(limit, 10) || 10, 100);
       const safeOffset = Math.max(0, parseInt(offset, 10) || 0);
 
       console.log(`[${requestId}] Safe query values:`, {
@@ -32,9 +33,9 @@ const User = {
           first_name as "firstName", 
           last_name as "lastName", 
           email,
-          obiettivo,
-          data_inizio as "dataInizio",
-          data_fine as "dataFine"
+          goal,
+          start_date as "startDate",
+          end_date as "endDate"
         FROM users
         ORDER BY id
         LIMIT ? OFFSET ?
@@ -115,9 +116,9 @@ const User = {
           first_name as "firstName", 
           last_name as "lastName", 
           email,
-          obiettivo,
-          data_inizio as "dataInizio",
-          data_fine as "dataFine"
+          goal,
+          start_date as "startDate",
+          end_date as "endDate"
         FROM users 
         WHERE id = ?
       `;
@@ -168,9 +169,9 @@ const User = {
         "firstName",
         "lastName",
         "email",
-        "obiettivo",
-        "dataInizio",
-        "dataFine",
+        "goal",
+        "startDate",
+        "endDate",
       ];
       const missingFields = requiredFields.filter((field) => !userData[field]);
 
@@ -184,7 +185,7 @@ const User = {
 
       const query = `
         INSERT INTO users 
-        (first_name, last_name, email, obiettivo, data_inizio, data_fine)
+        (first_name, last_name, email, goal, start_date, end_date)
         VALUES (?, ?, ?, ?, ?, ?)
       `;
 
@@ -192,9 +193,9 @@ const User = {
         userData.firstName,
         userData.lastName,
         userData.email,
-        userData.obiettivo,
-        userData.dataInizio,
-        userData.dataFine,
+        userData.goal,
+        userData.startDate,
+        userData.endDate,
       ];
 
       console.log(
@@ -294,56 +295,32 @@ const User = {
           throw new Error(`User with ID ${userId} not found`);
         }
 
-        const updateFields = [];
-        const values = [];
-
-        const fieldMap = {
-          firstName: "first_name",
-          lastName: "last_name",
-          email: "email",
-          obiettivo: "obiettivo",
-          dataInizio: "data_inizio",
-          dataFine: "data_fine",
-        };
-
-        Object.entries(userData).forEach(([key, value]) => {
-          if (key in fieldMap && value !== undefined) {
-            updateFields.push(`${fieldMap[key]} = ?`);
-            values.push(value);
-          }
-        });
-
-        if (updateFields.length === 0) {
-          throw new Error("No valid fields to update");
-        }
-
-        values.push(userId);
-
-        const query = `
-          UPDATE users 
-          SET ${updateFields.join(", ")}
-          WHERE id = ?
-        `;
-
-        console.log(
-          `[${requestId}] Executing query:`,
-          query.replace(/\s+/g, " ").trim()
-        );
-        console.log(`[${requestId}] With values:`, values);
-
-        const [result] = await connection.query(query, values);
-
-        if (result.affectedRows === 0) {
-          throw new Error("No rows were updated");
-        }
-
         const [updatedUser] = await connection.query(
-          'SELECT id, first_name as "firstName", last_name as "lastName", email, obiettivo, data_inizio as "dataInizio", data_fine as "dataFine" FROM users WHERE id = ?',
+          `
+            SELECT 
+              u.id, 
+              u.first_name as "firstName", 
+              u.last_name as "lastName", 
+              u.email, 
+              u.goal, 
+              u.start_date as "startDate", 
+              u.end_date as "endDate",
+              o.id as "objectiveId",
+              o.name as "objectiveName",
+              i.id as "intervalId",
+              i.name as "intervalName"
+            FROM users u 
+            LEFT JOIN user_objectives uo ON u.id = uo.userId 
+            LEFT JOIN objectives o ON uo.objectiveId = o.id 
+            LEFT JOIN user_intervals ui ON u.id = ui.userId 
+            LEFT JOIN intervals i ON ui.intervalId = i.id 
+            WHERE u.id = ?
+          `,
           [userId]
         );
 
         if (updatedUser.length === 0) {
-          throw new Error("Failed to fetch updated user data");
+          throw new Error(`User with ID ${userId} not found`);
         }
 
         await connection.commit();
