@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS objectives;
 
 -- Create interval_types table
 CREATE TABLE interval_types (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     name VARCHAR(50) NOT NULL UNIQUE,
     duration_minutes INT NOT NULL,
     description VARCHAR(255)
@@ -16,13 +16,13 @@ CREATE TABLE interval_types (
 
 -- Create objectives table
 CREATE TABLE objectives (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     title VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- Create users table
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL UNIQUE,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL
@@ -30,7 +30,7 @@ CREATE TABLE users (
 
 -- Create intervals table
 CREATE TABLE intervals (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     interval_type_id INT NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
