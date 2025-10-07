@@ -57,19 +57,29 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-First and foremost, you need to have mySQL installed. Then, just import the provided migration file in the sqldump folder and start the server and make sure the server is running at the 3001 port.
-
-### Installation
-
-1. Clone the repo
+First and foremost, you need to have mySQL installed. Then, you have to clone the repo on your machine, with the following command:
    ```sh
    git clone https://github.com/TheBigDiamond/MeditActive.git
    ```
-2. Install NPM packages
+Then, after making sure your SQL server is running, open the IDE terminal and run this command:
+   ```sh
+   node database\init-db.js
+   ```
+This will create the schema of the application in your db.
+
+Right after creating the schema, you can check if everything went well with this command:
+   ```sh
+   node database\db-check.js
+   ```
+The terminal should tell you all the tables created and all the pre existing data inside of them, if there are any.
+
+### Installation
+
+1. Install NPM packages
    ```sh
    npm install
    ```
-3. Run the server
+2. Run the server
    ```js
    node app.js
    ```
@@ -83,23 +93,29 @@ Now you're ready to start using the app.
 
 Open a new terminal and start inputting any of these commands:
    ```sh
-   (get all users)
-   curl http://localhost:3001/api/users
+   :: Create User
+curl -X POST http://localhost:3001/api/users -H "Content-Type: application/json" -d "{\"firstName\":\"(your first name)\",\"lastName\":\"/your last name)\",\"email\":\"(your email)\",\"objectives\":[(one or multiple objectives, simply check the related table)],\"intervals\":[(one of the intervals provided, simply check the related table)]}"
 
-   (get user by id)
-   curl http://localhost:3001/api/users/(id)
+:: Get All Users
+curl http://localhost:3001/api/users
 
-   (create a new user)
-   curl -X POST http://localhost:3001/api/users -H "Content-Type: application/json" -d "{\"firstName\":\"(your first name\", \"lastName\":\"(your last name)\", \"email\":\"(your email)\", \"obiettivo\":\"(your goal\", \"dataInizio\":\"(beginning date\", \"dataFine\":\"(finish date)\"}"
+:: Get User by ID
+curl http://localhost:3001/api/users/:id
 
-   (update a user completely)
-   curl -X PUT http://localhost:3001/api/users/(id) -H "Content-Type: application/json" -d "{\"firstName\":\"(updated first name)\", \"lastName\":\"(updated last name)\", \"email\":\"(updated email)\", \"obiettivo\":\"(updated goal)\", \"dataInizio\":\"(updated beginning date\", \"dataFine\":\"(updated finish date\"}"
+:: Update User
+curl -X PUT http://localhost:3001/api/users/:id -H "Content-Type: application/json" -d "{\"firstName\":\"(your first name\",\"lastName\":\"(your last name)\",\"email\":\"john.smith@example.com\",\"objectives\":[(one or multiple objectives, simply check the related table)],\"intervals\":[(one of the intervals provided, simply check the related table)]}"
 
-   (update a user partially)
-   curl -X PATCH http://localhost:3001/api/users/(id) -H "Content-Type: application/json" -d "{\"(your selected field\":\"(your updated field)\"}"
+:: Delete User
+curl -X DELETE http://localhost:3001/api/users/:id
 
-   (delete a user)
-   curl -X DELETE http://localhost:3001/api/users/(id)
+:: Get All Objectives
+curl http://localhost:3001/api/objectives
+
+:: Get All Interval Types
+curl http://localhost:3001/api/interval-types
+
+:: Filter Users by Date Range
+curl "http://localhost:3001/api/users?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD"
 
    ```
 
